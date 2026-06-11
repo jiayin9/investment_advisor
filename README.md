@@ -1,6 +1,6 @@
 # Investor Copilot
 
-A simple investment planning tool built with HTML and JavaScript.
+Investor Copilot is a web-based investment planning tool designed to help investors build smarter portfolios based on their risk tolerance and investment horizon.
 
 ## Features
 
@@ -9,12 +9,20 @@ A simple investment planning tool built with HTML and JavaScript.
 - Investment horizon analysis
 - Portfolio planning recommendations
 
-## Future Features
+## Planned Features
 
-- Risk assessment quiz
-- Portfolio doctor
-- TFSA / RRSP recommendations
+- Risk assessment questionnaire
+- Portfolio Doctor
+- TFSA / RRSP optimization
 - AI-powered investment insights
+- Asset allocation simulator
+
+## Technologies
+
+- HTML
+- JavaScript
+- Git
+- GitHub
 
 ## Author
 
