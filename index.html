@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Investor Copilot</title>
+</head>
+
+<body>
+    <h1>Investor Copilot</h1>
+
+    <p>Help investors make smarter decisions.</p>
+
+    <button onclick="showPlanner()">I Need an Investment Plan</button>
+
+    <br><br>
+
+    <button>Review My Portfolio</button>
+
+    <div id="planner"></div>
+
+ <script>
+    function showPlanner() {
+        document.getElementById("planner").innerHTML = `
+            <h2>Investment Planner</h2>
+
+            <p>Age:</p>
+            <input type="number" placeholder="25">
+
+            <p>Investment Amount:</p>
+            <input type="number" placeholder="10000">
+
+            <select>
+                <option>CAD</option>
+                <option>USD</option>
+                <option>EUR</option>
+                <option>RMB</option>
+            </select>
+
+            <p>Risk Level:</p>
+            <select id="riskLevel">
+                <option>Conservative</option>
+                <option>Balanced</option>
+                <option>Aggressive</option>
+            </select>
+
+            <p>Investment Horizon:</p>
+            <input type="number" id="horizon" placeholder="10">
+
+            <br><br>
+
+            <button onclick="generatePlan()">Generate Plan</button>
+            <div id="result"></div>
+        `;
+    }
+
+    function generatePlan() {
+    let horizon = Number(document.getElementById("horizon").value);
+    let risk = document.getElementById("riskLevel").value;
+
+    let allocation = "";
+    let why = "";
+    let risks = "";
+    let consider = "";
+
+        if (horizon <= 1) {
+            allocation = `
+                <p>90% Cash / Money Market</p>
+                <p>10% Bonds / GIC</p>
+                <p>0% ETF</p>
+            `;
+
+            why = `
+                <p>Because your investment horizon is very short, protecting your money should be the top priority.</p>
+                <p>Stock ETFs can drop significantly within a single year, and you may not have enough time to wait for recovery.</p>
+                <p>This allocation keeps most of your money liquid and stable, which is useful if you need the funds soon.</p>
+            `;
+
+            risks = `
+                <p>You may miss potential stock market gains.</p>
+                <p>Cash may lose purchasing power if inflation is high.</p>
+            `;
+
+            consider = `
+                <p>Use high-interest savings, money market funds, or short-term GICs instead of risky assets.</p>
+                <p>Only invest in ETFs if this money is truly not needed soon.</p>
+            `;
+        }
+
+        else if (horizon <= 3) {
+            allocation = `
+                <p>70% Cash / Money Market</p>
+                <p>20% Bonds / GIC</p>
+                <p>10% ETF</p>
+            `;
+
+            why = `
+                <p>Your investment horizon is still short, so stability matters more than aggressive growth.</p>
+                <p>A small ETF position gives you some exposure to market growth, while cash and bonds reduce the chance of a large loss.</p>
+                <p>This is suitable for goals like preparing for school, moving, buying a car, or saving for a near-term purchase.</p>
+            `;
+
+            risks = `
+                <p>The ETF portion can still lose value.</p>
+                <p>Returns may be lower than a more aggressive portfolio.</p>
+            `;
+
+            consider = `
+                <p>Keep most of the money accessible.</p>
+                <p>Do not chase high returns if you know you may need the money soon.</p>
+            `;
+        }
+
+        else if (horizon <= 7) {
+            if (risk === "Conservative") {
+                allocation = `<p>40% ETF</p><p>40% Bonds</p><p>20% Cash</p>`;
+                why = `
+                    <p>You have a medium-term horizon, but your risk level is conservative.</p>
+                    <p>This allocation keeps a meaningful amount in bonds and cash to reduce volatility.</p>
+                    <p>ETF exposure still gives the portfolio some growth potential without taking excessive risk.</p>
+                `;
+            } else if (risk === "Balanced") {
+                allocation = `<p>55% ETF</p><p>30% Bonds</p><p>15% Cash</p>`;
+                why = `
+                    <p>You have enough time to accept some market movement, but not enough to ignore risk completely.</p>
+                    <p>This balanced allocation aims for growth through ETFs while using bonds and cash to reduce downside risk.</p>
+                    <p>It fits investors who want progress but do not want extreme volatility.</p>
+                `;
+            } else {
+                allocation = `<p>70% ETF</p><p>20% Bonds</p><p>10% Cash</p>`;
+                why = `
+                    <p>You selected an aggressive risk level and have a medium-term horizon.</p>
+                    <p>A higher ETF allocation may help capture growth, but the portfolio still keeps some bonds and cash for stability.</p>
+                    <p>This works best if you are comfortable seeing temporary losses and do not need the money immediately.</p>
+                `;
+            }
+
+            risks = `
+                <p>Market downturns could affect your portfolio before your goal date.</p>
+                <p>If your timeline changes, this allocation may become too risky.</p>
+            `;
+
+            consider = `
+                <p>Review your plan every year.</p>
+                <p>If you need the money sooner, gradually reduce ETF exposure.</p>
+            `;
+        }
+
+        else if (horizon <= 15) {
+            if (risk === "Conservative") {
+                allocation = `<p>50% ETF</p><p>35% Bonds</p><p>15% Cash</p>`;
+                why = `
+                    <p>You have a long enough horizon to invest for growth, but your conservative risk profile means stability still matters.</p>
+                    <p>This allocation gives half of the portfolio to ETFs while keeping a strong bond and cash position.</p>
+                    <p>It is designed for steady growth without taking an overly aggressive approach.</p>
+                `;
+            } else if (risk === "Balanced") {
+                allocation = `<p>70% ETF</p><p>20% Bonds</p><p>10% Cash</p>`;
+                why = `
+                    <p>Your time horizon allows you to benefit from long-term market growth.</p>
+                    <p>A 70% ETF allocation gives the portfolio meaningful growth potential, while bonds and cash help reduce volatility.</p>
+                    <p>This is a reasonable structure for investors who want growth but still care about risk control.</p>
+                `;
+            } else {
+                allocation = `<p>85% ETF</p><p>10% Bonds</p><p>5% Cash</p>`;
+                why = `
+                    <p>You have a long investment horizon and a high tolerance for risk.</p>
+                    <p>This allows the portfolio to focus heavily on ETFs, which may offer stronger long-term growth potential.</p>
+                    <p>The small bond and cash allocation adds some diversification and flexibility during uncertain markets.</p>
+                `;
+            }
+
+            risks = `
+                <p>ETF-heavy portfolios can fall sharply during market corrections.</p>
+                <p>Emotional decisions during downturns can hurt long-term results.</p>
+            `;
+
+            consider = `
+                <p>Invest regularly instead of trying to time the market.</p>
+                <p>Rebalance your portfolio if one asset class grows too large.</p>
+            `;
+        }
+
+        else {
+            if (risk === "Conservative") {
+                allocation = `<p>60% ETF</p><p>30% Bonds</p><p>10% Cash</p>`;
+                why = `
+                    <p>You have a very long investment horizon, which gives your portfolio time to recover from market downturns.</p>
+                    <p>Even with a conservative risk profile, holding too much cash for decades may limit growth.</p>
+                    <p>This allocation increases ETF exposure while still keeping bonds and cash for stability.</p>
+                `;
+            } else if (risk === "Balanced") {
+                allocation = `<p>80% ETF</p><p>15% Bonds</p><p>5% Cash</p>`;
+                why = `
+                    <p>You have a very long horizon and a balanced risk profile.</p>
+                    <p>This portfolio focuses on long-term growth through ETFs while keeping a smaller bond position for diversification.</p>
+                    <p>The low cash position reflects the fact that long-term money usually does not need to sit idle.</p>
+                `;
+            } else {
+                allocation = `<p>90% ETF</p><p>5% Bonds</p><p>5% Cash</p>`;
+                why = `
+                    <p>You have both a very long investment horizon and an aggressive risk tolerance.</p>
+                    <p>This allocation prioritizes long-term growth, because you have more time to recover from short-term market declines.</p>
+                    <p>However, this approach requires discipline because the portfolio may experience large temporary losses.</p>
+                `;
+            }
+
+            risks = `
+                <p>The portfolio may be volatile, especially during recessions or market crashes.</p>
+                <p>Long-term growth is not guaranteed.</p>
+                <p>If your life situation changes, this allocation may need to change too.</p>
+            `;
+
+            consider = `
+                <p>Stay consistent and avoid panic selling.</p>
+                <p>Review the portfolio when your income, goals, or time horizon changes.</p>
+                <p>Consider adding international diversification later.</p>
+            `;
+        }
+
+        document.getElementById("result").innerHTML = `
+            <h3>Suggested Allocation</h3>
+            ${allocation}
+
+            <h3>Why This Allocation</h3>
+            ${why}
+
+            <h3>Potential Risks</h3>
+            ${risks}
+
+            <h3>Things To Consider</h3>
+            ${consider}
+
+            <p><em>This is an educational tool, not financial advice.</em></p>
+        `;
+    }
+</script>
+</body>
+</html>
