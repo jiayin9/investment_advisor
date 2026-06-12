@@ -13,11 +13,85 @@
 
     <br><br>
 
-    <button>Review My Portfolio</button>
+    <button onclick="showPortfolioDoctor()">Review My Portfolio</button>
 
     <div id="planner"></div>
+    <div id="doctor"></div>
 
  <script>
+    const assetDatabase = {
+        VOO: {
+            name: "Vanguard S&P 500 ETF",
+            category: "ETF",
+            region: "US",
+            style: "Broad US Market",
+            risk: "Medium"
+        },
+        VFV: {
+            name: "Vanguard S&P 500 Index ETF",
+            category: "ETF",
+            region: "Canada-listed / US exposure",
+            style: "Broad US Market",
+            risk: "Medium"
+        },
+        QQQ: {
+            name: "Invesco QQQ Trust",
+            category: "ETF",
+            region: "US",
+            style: "Technology / Growth",
+            risk: "High"
+        },
+        QQC: {
+            name: "Invesco NASDAQ 100 Index ETF",
+            category: "ETF",
+            region: "Canada-listed / US tech exposure",
+            style: "Technology / Growth",
+            risk: "High"
+        },
+        XEI: {
+            name: "iShares S&P/TSX Composite High Dividend ETF",
+            category: "ETF",
+            region: "Canada",
+            style: "Dividend / Income",
+            risk: "Medium"
+        },
+        CASH: {
+            name: "Cash or cash-equivalent holdings",
+            category: "Cash",
+            region: "N/A",
+            style: "Liquidity",
+            risk: "Low"
+        },
+        SPY: {
+            name: "SPDR S&P 500 ETF Trust",
+            category: "ETF",
+            region: "US",
+            style: "Broad US Market",
+            risk: "Medium"
+        },
+        SCHD: {
+            name: "Schwab US Dividend Equity ETF",
+            category: "ETF",
+            region: "US",
+            style: "Dividend / Value",
+            risk: "Medium"
+        },
+        VEQT: {
+            name: "Vanguard All-Equity ETF Portfolio",
+            category: "ETF",
+            region: "Global",
+            style: "All-equity diversified portfolio",
+            risk: "Medium-High"
+        },
+        XEQT: {
+            name: "iShares Core Equity ETF Portfolio",
+            category: "ETF",
+            region: "Global",
+            style: "All-equity diversified portfolio",
+            risk: "Medium-High"
+        }
+    };
+
     function showPlanner() {
         document.getElementById("planner").innerHTML = `
             <h2>Investment Planner</h2>
@@ -50,6 +124,76 @@
             <button onclick="generatePlan()">Generate Plan</button>
             <div id="result"></div>
         `;
+    }
+
+    function showPortfolioDoctor() {
+        document.getElementById("doctor").innerHTML = `
+            <h2>Portfolio Doctor</h2>
+
+            <p>Enter your portfolio allocation:</p>
+
+            <div id="assetRows">
+                <div class="asset-row">
+                    <input
+                        type="text"
+                        placeholder="Asset name, e.g. VOO"
+                        oninput="detectAsset(this)"
+                    >
+
+                    <span class="asset-type">
+                        Unknown
+                    </span>
+
+                    <input type="number" placeholder="Allocation %">
+                </div>
+            </div>
+
+            <br>
+
+            <button onclick="addAssetRow()">Add Asset</button>
+            <button onclick="analyzePortfolio()">Analyze Portfolio</button>
+
+            <div id="portfolioResult"></div>
+        `;
+    }
+
+    function detectAsset(input) {
+
+        input.value = input.value.toUpperCase();
+
+        let assetName = input.value;
+
+        let typeSpan = input.parentElement.querySelector(".asset-type");
+
+        if (assetDatabase[assetName]) {
+            typeSpan.textContent =
+                assetDatabase[assetName].category;
+        } else {
+            typeSpan.textContent = "Unknown";
+        }
+    }
+
+    function addAssetRow() {
+    let assetRows = document.getElementById("assetRows");
+
+    let newRow = document.createElement("div");
+        newRow.className = "asset-row";
+
+        newRow.innerHTML = `
+        <input
+            type="text"
+            placeholder="VOO"
+            oninput="detectAsset(this)"
+        >
+
+        <span class="asset-type">
+            Unknown
+        </span>
+
+        <input type="number" placeholder="%">
+    `;
+
+        assetRows.appendChild(newRow);
     }
 
     function generatePlan() {
@@ -230,6 +374,112 @@
             ${consider}
 
             <p><em>This is an educational tool, not financial advice.</em></p>
+        `;
+    }
+
+    function analyzePortfolio() {
+        let rows = document.querySelectorAll(".asset-row");
+
+        let total = 0;
+        let largestAsset = "";
+        let largestAllocation = 0;
+
+        let etfTotal = 0;
+        let stockTotal = 0;
+        let bondTotal = 0;
+        let cashTotal = 0;
+        let cryptoTotal = 0;
+        let otherTotal = 0;
+
+        let hasError = false;
+        let errorMessage = "";
+
+        rows.forEach(function(row) {
+            let assetName = row.children[0].value.trim().toUpperCase();
+            let assetType = row.querySelector(".asset-type").textContent;
+            let allocationValue = row.children[2].value.trim();
+
+            if (assetName === "" && allocationValue === "") {
+                return;
+            }
+
+            if (assetName !== "" && allocationValue === "") {
+                hasError = true;
+                errorMessage = "Please enter an allocation percentage for " + assetName + ".";
+                return;
+            }
+
+            if (assetName === "" && allocationValue !== "") {
+                hasError = true;
+                errorMessage = "Please enter an asset name.";
+                return;
+            }
+
+            let allocation = Number(allocationValue);
+
+            if (allocation <= 0) {
+                hasError = true;
+                errorMessage = "Allocation percentage must be greater than 0.";
+                return;
+            }
+
+            total += allocation;
+
+            if (allocation > largestAllocation) {
+                largestAllocation = allocation;
+                largestAsset = assetName;
+            }
+
+            if (assetType === "ETF") {
+                etfTotal += allocation;
+            } else if (assetType === "Stock") {
+                stockTotal += allocation;
+            } else if (assetType === "Bond") {
+                bondTotal += allocation;
+            } else if (assetType === "Cash") {
+                cashTotal += allocation;
+            } else if (assetType === "Crypto") {
+                cryptoTotal += allocation;
+            } else {
+                otherTotal += allocation;
+            }
+        });
+
+        if (hasError) {
+            document.getElementById("portfolioResult").innerHTML = `
+                <p style="color: red;"><strong>Error:</strong> ${errorMessage}</p>
+            `;
+            return;
+        }
+
+        if (total === 0) {
+            document.getElementById("portfolioResult").innerHTML = `
+                <p style="color: red;"><strong>Error:</strong> Please enter at least one asset and allocation.</p>
+            `;
+            return;
+        }
+
+        if (total !== 100) {
+            document.getElementById("portfolioResult").innerHTML = `
+                <p style="color: red;"><strong>Error:</strong> Your total allocation is ${total}%. Please make sure it adds up to 100%.</p>
+            `;
+            return;
+        }
+
+        document.getElementById("portfolioResult").innerHTML = `
+            <h3>Portfolio Diagnosis</h3>
+
+            <p><strong>Total Allocation:</strong> ${total}%</p>
+
+            <p><strong>Largest Position:</strong> ${largestAsset} (${largestAllocation}%)</p>
+
+            <h4>Asset Type Breakdown</h4>
+            <p>ETF: ${etfTotal}%</p>
+            <p>Stocks: ${stockTotal}%</p>
+            <p>Bonds: ${bondTotal}%</p>
+            <p>Cash: ${cashTotal}%</p>
+            <p>Crypto: ${cryptoTotal}%</p>
+            <p>Other: ${otherTotal}%</p>
         `;
     }
 </script>
